@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="mb-3">
+  <h4>Total Money Spent: ${{ '%.2f' | format(total_spent) }}</h4>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Amount</th>
+      <th>Category</th>
+      <th>Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in transactions %}
+    <tr>
+      <td>{{ t.description }}</td>
+      <td>${{ '%.2f' | format(t.amount) }}</td>
+      <td>{{ t.category }}</td>
+      <td>{{ t.date.strftime('%Y-%m-%d') }}</td>
+      <td>
+        <a href="{{ url_for('edit', transaction_id=t.id) }}" class="btn btn-sm btn-primary">Edit</a>
+        <form action="{{ url_for('delete', transaction_id=t.id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this transaction?');">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<form method="POST" class="mt-4">
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <input type="text" id="description" name="description" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <input type="number" step="0.01" id="amount" name="amount" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label for="category" class="form-label">Category</label>
+    <input type="text" id="category" name="category" class="form-control" required>
+  </div>
+  <div class="mb-3">
+    <label for="date" class="form-label">Date</label>
+    <input type="date" id="date" name="date" class="form-control" required>
+  </div>
+  <button type="submit" class="btn btn-success">Add Transaction</button>
+</form>
+
+{% endblock %}
